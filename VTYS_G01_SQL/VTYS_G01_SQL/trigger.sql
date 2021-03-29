@@ -1,0 +1,25 @@
+IF OBJECT_ID('trguUyeeDelete','TR') IS NOT NULL
+     DROP TRIGGER trguUyeeDelete
+GO
+
+EXEC SPDelete 'AklarÇörekçi', 'ERKEK'
+
+--SÝLÝNEN UYE BURADA TUTULACAK
+
+CREATE TABLE UyeeDeleted
+(
+ TcNo VARCHAR(20) PRIMARY KEY,
+ Ad VARCHAR(20),
+ Soyad VARCHAR(20),
+ Cinsiyet VARCHAR(6),
+ Deleteddate DATETIME
+)
+GO
+
+--SÝLÝNEN KAYIT YA DA KAYITLAR YEDEK BÝR TABLOYA KOPYALANIYOR.
+
+CREATE TRIGGER trguUyeeDelete ON Uyee AFTER DELETE AS
+INSERT INTO UyeeDeleted SELECT TcNo,Ad,Soyad,Cinsiyet,GETDATE() FROM deleted
+GO
+
+SELECT* FROM UyeeDeleted
